@@ -1,5 +1,5 @@
 use std::env;
-use yahoo_finance as yahoo;
+use yahoo_finance_api as yahoo;
 
 // fn fetch_stock_data() {
 
