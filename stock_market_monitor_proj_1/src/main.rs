@@ -1,13 +1,20 @@
 use std::env;
 use yahoo_finance_api as yahoo;
 use std::io::{self, Write};
+use std::time::{Duration, UNIX_EPOCH};
 
 // Asynchronous function to check if a stock exists
 async fn does_stock_exist(symbol: &str) -> bool {
-    let provider = yahoo::YahooConnector::new();
-    match provider.get_latest_quotes(symbol, "1d").await {
-        Ok(_) => true,
-        Err(_) => false,
+    // Create a client
+    let client = yahoo::YahooConnector::new();
+    
+    // Fetch the summary for the given symbol
+    match client.get_latest_quotes(symbol, "1d").await {
+        Ok(quotes) => {
+            // If there are quotes for the symbol, it exists
+            !quotes.chart.result.is_empty()
+        }
+        Err(_) => false, // Return false if there was an error fetching data
     }
 }
 
