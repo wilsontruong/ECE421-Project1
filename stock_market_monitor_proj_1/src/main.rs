@@ -1,5 +1,15 @@
 use std::env;
 use yahoo_finance_api as yahoo;
+use std::io::{self, Write};
+
+// Asynchronous function to check if a stock exists
+async fn does_stock_exist(symbol: &str) -> bool {
+    let provider = yahoo::YahooConnector::new();
+    match provider.get_latest_quotes(symbol, "1d").await {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
 
 // fn fetch_stock_data() {
 
@@ -9,9 +19,8 @@ use yahoo_finance_api as yahoo;
 
 // }
 
-use std::io::{self, Write};
-
-fn main() {
+#[tokio::main]
+async fn main() {
     loop {
         // Print a prompt
         print!("Enter command: ");
@@ -29,7 +38,15 @@ fn main() {
                 match input {
                     "exit" => break, // Exit the loop and end the program
                     "--help" => println!("Help menu"), // Print the help menu
-                    _ => println!("STOCK: {}", input), // Echo the input prefixed with "STOCK: "
+                    symbol => {
+                        // Asynchronously check if the stock exists
+                        let exists = does_stock_exist(symbol).await;
+                        if exists {
+                            println!("STOCK: {} exists", symbol);
+                        } else {
+                            println!("STOCK: {} does not exist", symbol);
+                        }
+                    }
                 }
             }
             Err(error) => println!("Error reading input: {}", error),
