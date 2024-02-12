@@ -1,7 +1,7 @@
-use std::env;
+// use std::env;
 use yahoo_finance_api as yahoo;
 use std::io::{self, Write};
-use std::time::{Duration, UNIX_EPOCH};
+// use std::time::{Duration, UNIX_EPOCH};
 
 // Asynchronous function to check if a stock exists
 async fn does_stock_exist(symbol: &str) -> bool {
